@@ -1,3 +1,3 @@
 [submodule "lib/piece-table"]
-	path = lib/PieceTable
+	path = lib/pieceTable
 	url = git@github.com:sparkeditor/piece-table
