@@ -8,7 +8,6 @@ describe("Buffer Manager", function() {
 
     afterEach(function() {
         BufferManager.deleteBuffer("testBuffer");
-        BufferManager.deleteBuffer("testBuffer1");
     });
 
     it("creates an empty buffer", function() {
@@ -19,6 +18,7 @@ describe("Buffer Manager", function() {
         expect(buf).to.respondTo("getSequence");
         expect(buf).to.respondTo("stringAt");
         expect(buf.getSequence()).to.be.empty;
+        BufferManager.deleteBuffer("testBuffer1");
     });
 
     it("creates a buffer with content", function() {
@@ -29,10 +29,11 @@ describe("Buffer Manager", function() {
         expect(buf).to.respondTo("getSequence");
         expect(buf).to.respondTo("stringAt");
         expect(buf.getSequence()).to.equal("This is another test.");
+        BufferManager.deleteBuffer("testBuffer1");
     });
 
     it("throws an error on an attempt to create existing buffer", function() {
-        expect(BufferManager.createBuffer.apply(BufferManager, "testBuffer")).to.throw(Error);
+        expect(BufferManager.createBuffer.bind(BufferManager, "testBuffer")).to.throw(Error);
     });
 
     it("gets an existing buffer", function() {
@@ -54,9 +55,12 @@ describe("Buffer Manager", function() {
         BufferManager.deleteBuffer("testBuffer");
         const buf = BufferManager.getBuffer("testBuffer");
         expect(buf).to.not.exist;
+
+        // Recreate the buffer to avoid an error
+        BufferManager.createBuffer("testBuffer");
     });
 
     it("throws an error on an attempt to delete nonexistant buffer", function() {
-        expect(BufferManager.deleteBuffer.apply(BufferManager, "testBuffer1")).to.throw(Error);
+        expect(BufferManager.deleteBuffer.bind(BufferManager, "testBuffer1")).to.throw(Error);
     });
 });
