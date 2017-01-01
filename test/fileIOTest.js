@@ -46,7 +46,7 @@ describe("FileIO", function() {
 
     it("overwrites an existing file synchronously", function(done) {
         fileIO.write("test/dir1/file1", "Different text.");
-        fs.readFile("test/dir1/file1", function(error, data) {
+        fs.readFile("test/dir1/file1", "utf8", function(error, data) {
             expect(error).to.be.null;
             expect(data).to.equal("Different text.");
             done();
@@ -54,10 +54,9 @@ describe("FileIO", function() {
     });
 
     it("overwrites an existing file asynchronously", function(done) {
-        fileIO.write("test/dir1/file1", "Different text", function(error, data) {
+        fileIO.write("test/dir1/file1", "Different text.", function(error) {
             expect(error).to.not.exist;
-            expect(data).to.equal("Different text.");
-            fs.readFile("test/dir1/file1", function(err, text) {
+            fs.readFile("test/dir1/file1", "utf8", function(err, text) {
                 expect(err).to.not.exist;
                 expect(text).to.equal("Different text.");
                 done();
@@ -67,7 +66,7 @@ describe("FileIO", function() {
 
     it("writes a new file synchronously", function(done) {
         fileIO.write("test/dir1/file2", "Some more text.");
-        fs.readFile("test/dir1/file2", function(error, data) {
+        fs.readFile("test/dir1/file2", "utf8", function(error, data) {
             expect(error).to.not.exist;
             expect(data).to.equal("Some more text.");
             done();
@@ -75,12 +74,11 @@ describe("FileIO", function() {
     });
 
     it("writes a new file asynchronously", function(done) {
-        fileIO.write("test/dir1/file2", "Some more text.", function(error, data) {
+        fileIO.write("test/dir1/file2", "Some more text.", function(error) {
             expect(error).to.not.exist;
-            expect(data).to.equal("Some more text.");
-            fs.readFile("test/dir1/file2", function(err, text) {
+            fs.readFile("test/dir1/file2", "utf8", function(err, text) {
                 expect(err).to.not.exist;
-                expect(text).to.equal("Some more text");
+                expect(text).to.equal("Some more text.");
                 done();
             });
         });
@@ -115,7 +113,7 @@ describe("FileIO", function() {
     it("returns an error trying to create an existing directory asynchronously", function(done) {
         fileIO.createDir("test/dir1", function(error) {
             expect(error).to.exist;
-            expect(error.message).to.equal("EEXIST");
+            expect(error.code).to.equal("EEXIST");
             done();
         });
     });
@@ -162,7 +160,7 @@ describe("FileIO", function() {
 
     it("returns an error trying to asynchronously delete a file that does not exist", function(done) {
         fileIO.delete("test/dir1/file2", function(error) {
-            expect(error).to.equal("ENOENT");
+            expect(error.code).to.equal("ENOENT");
             done();
         });
     });
