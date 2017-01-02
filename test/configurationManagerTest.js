@@ -73,4 +73,16 @@ describe("ConfigurationManager", function() {
         expect(value1).to.equal("default1");
         expect(value2).to.equal("default2");
     });
+
+    it("caches config files", function() {
+        let configurationManager = new ConfigurationManager(".spark");
+        mock({
+            ".spark": '{ "testKey1": "notTheSame", "testKey2": "stillNotTheSame" }'
+        });
+        configurationManager = new ConfigurationManager(".spark");
+        const value1 = configurationManager.getValue("testKey1");
+        const value2 = configurationManager.getValue("testKey2");
+        expect(value1).to.equal("testValue1");
+        expect(value2).to.equal("testValue2");
+    });
 });
