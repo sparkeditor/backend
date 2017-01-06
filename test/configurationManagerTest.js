@@ -85,4 +85,22 @@ describe("ConfigurationManager", function() {
         expect(value1).to.equal("testValue1");
         expect(value2).to.equal("testValue2");
     });
+
+    it("handles nested config objects", function() {
+        mock({
+            "nestedConfig": '{ "nested": { "nestedObject1": { "testKey": "testValue" }, "nestedObject2": { "testNested": { "testKey": "testValue" } } } }'
+        });
+        const configurationManager = new ConfigurationManager("nestedConfig");
+        const nested = configurationManager.getValue("nested");
+        expect(nested).to.deep.equal({
+            nestedObject1: {
+                testKey: "testValue"
+            },
+            nestedObject2: {
+                testNested: {
+                    testKey: "testValue"
+                }
+            }
+        });
+    });
 });
