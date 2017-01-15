@@ -110,16 +110,15 @@ describe("FileIO", function() {
         });
     });
 
-    it("returns an error trying to create an existing directory asynchronously", function(done) {
+    it("fails silently trying to create an existing directory asynchronously", function(done) {
         fileIO.createDir("test/dir1", function(error) {
-            expect(error).to.exist;
-            expect(error.code).to.equal("EEXIST");
+            expect(error).to.not.exist;
             done();
         });
     });
 
-    it("throws an error trying to create an existing directory synchronously", function() {
-        expect(fileIO.createDir.bind(fileIO, "test/dir1")).to.throw("EEXIST");
+    it("fails silently trying to create an existing directory synchronously", function() {
+        expect(fileIO.createDir.bind(fileIO, "test/dir1")).not.to.throw("EEXIST");
     });
 
     it("deletes a file synchronously", function(done) {
