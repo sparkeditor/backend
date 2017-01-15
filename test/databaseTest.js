@@ -5,9 +5,20 @@ const database = require("../lib/database");
 const expect = require("chai").expect;
 
 describe("Database", function() {
-    beforeEach(function() {
-        const db = new sqlite3.Database(path.join(".", "test.db"));
-        database.setDB(path.join(".", "test.db"));
+    let db;
+
+    beforeEach(function(done) {
+        db = new sqlite3.Database(path.join(".", "test.db"), function(err) {
+            if (err) {
+                throw err;
+            }
+            database.setDB(path.join(".", "test.db"), function(err) {
+                if (err) {
+                    throw err;
+                }
+                done();
+            });
+        });
     });
 
     afterEach(function(done) {
@@ -24,8 +35,8 @@ describe("Database", function() {
             expect(error).to.not.exist;
             db.get("SELECT sql, count(*) FROM sqlite_master WHERE type='table' AND name='test1'", function(err, result) {
                  expect(err).to.not.exist;
-                 expect(result.count).to.equal(1);
-                 expect(result.sql.toLowerCase()).to.equal("create table test1 (foo integer primary key, bar text");
+                 expect(result["count(*)"]).to.equal(1);
+                 expect(result.sql.toLowerCase()).to.equal("create table test1 (foo integer primary key, bar text)");
                  done();
             });
         });
@@ -36,20 +47,20 @@ describe("Database", function() {
            expect(error).to.not.exist;
            db.get("SELECT sql, count(*) FROM sqlite_master WHERE type='table' AND name='test1'", function(err, result) {
                expect(err).to.not.exist;
-               expect(result.count).to.equal(1);
-               expect(result.sql.toLowerCase()).to.equal("create table test1 (foo integer primary key, bar text");
+               expect(result["count(*)"]).to.equal(1);
+               expect(result.sql.toLowerCase()).to.equal("create table test1 (foo integer primary key, bar text)");
                database.createTable("test1", {foo: {type: "integer", primaryKey: true}, bar: {type: "text"}}, function(error) {
                    expect(error).to.not.exist;
                    db.get("SELECT sql, count(*) FROM sqlite_master WHERE type='table' AND name='test1'", function(err, result) {
                        expect(err).to.not.exist;
-                       expect(result.count).to.equal(1);
-                       expect(result.sql.toLowerCase()).to.equal("create table test1 (foo integer primary key, bar text");
+                       expect(result["count(*)"]).to.equal(1);
+                       expect(result.sql.toLowerCase()).to.equal("create table test1 (foo integer primary key, bar text)");
                        database.createTable("test1", {differentFoo: {type: "integer", primaryKey: true}, differentBar: {type: "text"}}, function(error) {
                            expect(error).to.not.exist;
                            db.get("SELECT sql, count(*) FROM sqlite_master WHERE type='table' AND name='test1'", function (err, result) {
                                expect(err).to.not.exist;
-                               expect(result.count).to.equal(1);
-                               expect(result.sql.toLowerCase()).to.equal("create table test1 (foo integer primary key, bar text");
+                               expect(result["count(*)"]).to.equal(1);
+                               expect(result.sql.toLowerCase()).to.equal("create table test1 (foo integer primary key, bar text)");
                                done();
                            });
                        });
@@ -101,9 +112,10 @@ describe("Database", function() {
                 expect(err).to.not.exist;
                 database.query("test1", {bar: "test"}, function(err, result) {
                     expect(err).to.not.exist;
-                    expect(result).to.be("array");
+                    expect(result).to.be.an("array");
                     expect(result).to.have.length(1);
                     expect(result[0]).to.deep.equal({foo: 3, bar: "test"});
+                    done();
                 });
             });
         });
