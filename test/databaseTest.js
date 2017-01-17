@@ -121,6 +121,48 @@ describe("Database", function() {
         });
     });
 
+    it("queries with a JOIN clause", function(done) {
+        database.createTable("test1",
+        {
+            foo: {
+                type: "integer", primaryKey: true
+            },
+            bar: {
+                type: "text"
+            }
+        }, function(err) {
+            expect(err).to.not.exist;
+            database.createTable("test2",
+                {
+                    id: {
+                        type: "integer",
+                        primaryKey: true
+                    },
+                    test1_fk: {
+                        type: "integer",
+                        foreignKey: {
+                            "test1": "foo"
+                        }
+                    }
+                }, function(err) {
+                    expect(err).to.not.exist;
+                    database.insertInto("test1", {foo: 3, bar: "test"}, function(err) {
+                        expect(err).to.not.exist;
+                        database.insertInto("test2", {id: 1, test1_fk: 3}, function(err) {
+                            expect(err).to.not.exist;
+                            database.query({"test1": "foo", "test2": "test1_fk"}, {bar: "test"}, function(err, result) {
+                                expect(err).to.not.exist;
+                                expect(result).to.be.an("array");
+                                expect(result).to.have.length(1);
+                                expect(result[0]).to.deep.equal({foo: 3, bar: "test", id: 1, test1_fk: 3});
+                                done();
+                            });
+                        });
+                    });
+                });
+            });
+    });
+
     it("deletes rows from a table", function(done) {
         database.createTable("test1", {foo: {type: "integer", primaryKey: true}, bar: {type: "text"}}, function (err) {
             expect(err).to.not.exist;
