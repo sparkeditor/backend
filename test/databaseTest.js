@@ -22,7 +22,7 @@ describe("Database", function() {
     });
 
     afterEach(function(done) {
-        fs.unlink(path.join(".", "test.db"), () => done());
+        fs.unlink(path.join(".", "test.db"), done);
     });
 
     it("exposes the sqlite3 Database instance", function() {
