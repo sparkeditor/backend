@@ -20,8 +20,8 @@ describe("ProjectManager", function() {
                 // create the project table
                 database.createTable("project", {
                     id: {type: "integer", primaryKey: true},
-                    name: {type: "text"},
-                    root_directory: {type: "text"}
+                    name: {type: "text", notNull: true},
+                    root_directory: {type: "text", notNull: true}
                 }, function(err) {
                     if (err) {
                         throw err;
@@ -37,7 +37,7 @@ describe("ProjectManager", function() {
     });
 
     it("creates and persists a new project", function(done) {
-        projectManager.createProject({id: 1, name: "MyProject", root_directory: "/some/directory"}, function(error) {
+        projectManager.createProject({name: "MyProject", root_directory: "/some/directory"}, function(error) {
             expect(error).to.not.exist;
             db.all("SELECT * FROM project WHERE id = 1", function(err, rows) {
                 expect(err).to.not.exist;
@@ -49,7 +49,7 @@ describe("ProjectManager", function() {
     });
 
     it("retrieves a project", function(done) {
-        projectManager.createProject({id: 1, name: "MyProject", root_directory: "/some/directory"}, function(error) {
+        projectManager.createProject({name: "MyProject", root_directory: "/some/directory"}, function(error) {
             expect(error).to.not.exist;
             projectManager.getProject(1, function(err, project) {
                 expect(err).to.not.exist;
@@ -60,24 +60,24 @@ describe("ProjectManager", function() {
     });
 
     it("retrieves users for a project", function(done) {
-        projectManager.createProject({id: 1, name: "MyProject", root_directory: "/some/directory"}, function(err) {
+        projectManager.createProject({name: "MyProject", root_directory: "/some/directory"}, function(err) {
             expect(err).to.not.exist;
             // mock the auth module functionality
             database.createTable("user",
                 {
                     "id": {type: "integer", primaryKey: true},
-                    "username": {type: "text"},
-                    "password": {type: "text"}
+                    "username": {type: "text", unique: true, notNull: true},
+                    "password": {type: "text", notNull: true}
                 }, function(err) {
                     expect(err).to.not.exist;
                     database.createTable("user_project",
                         {
                             "user_id": {type: "integer", foreignKey: {"user": "id"}},
                             "project_id": {type: "integer", foreignKey: {"project": "id"}},
-                            "access_level": {type: "text"}
+                            "access_level": {type: "text", notNull: true}
                         }, function(err) {
                             expect(err).to.not.exist;
-                            database.insertInto("user", [{id: 1, username: "testUser1", password: "password"}, {id: 2, username: "testUser2", password: "password"}], function(err) {
+                            database.insertInto("user", [{username: "testUser1", password: "password"}, {username: "testUser2", password: "password"}], function(err) {
                                 expect(err).to.not.exist;
                                 database.insertInto("user_project", [{user_id: 1, project_id: 1, access_level: "ADMIN"}, {user_id: 2, project_id: 1, access_level: "CONTRIBUTOR"}], function(err) {
                                     expect(err).to.not.exist;
@@ -98,10 +98,9 @@ describe("ProjectManager", function() {
     });
 
     it("retrieves projects for a user", function(done) {
-        projectManager.createProject({id: 1, name: "MyProject", root_directory: "/some/directory"}, function (err) {
+        projectManager.createProject({name: "MyProject", root_directory: "/some/directory"}, function (err) {
             expect(err).to.not.exist;
             projectManager.createProject({
-                id: 2,
                 name: "MyOtherProject",
                 root_directory: "/some/other/directory"
             }, function (err) {
@@ -110,22 +109,21 @@ describe("ProjectManager", function() {
                 database.createTable("user",
                     {
                         "id": {type: "integer", primaryKey: true},
-                        "username": {type: "text"},
-                        "password": {type: "text"}
+                        "username": {type: "text", unique: true, notNull: true},
+                        "password": {type: "text", notNull: true}
                     }, function (err) {
                         expect(err).to.not.exist;
                         database.createTable("user_project",
                             {
                                 "user_id": {type: "integer", foreignKey: {"user": "id"}},
                                 "project_id": {type: "integer", foreignKey: {"project": "id"}},
-                                "access_level": {type: "text"}
+                                "access_level": {type: "text", notNull: true}
                             }, function (err) {
                                 expect(err).to.not.exist;
                                 database.insertInto("user", [{
-                                    id: 1,
                                     username: "testUser1",
                                     password: "password"
-                                }, {id: 2, username: "testUser2", password: "password"}], function (err) {
+                                }, {username: "testUser2", password: "password"}], function (err) {
                                     expect(err).to.not.exist;
                                     database.insertInto("user_project", [{
                                         user_id: 1,
@@ -151,7 +149,7 @@ describe("ProjectManager", function() {
     });
 
     it("deletes a project", function(done) {
-        projectManager.createProject({id: 1, name: "MyProject", root_directory: "/some/directory"}, function(error) {
+        projectManager.createProject({name: "MyProject", root_directory: "/some/directory"}, function(error) {
             expect(error).to.not.exist;
             projectManager.deleteProject(1, function(err) {
                 expect(err).to.not.exist;
