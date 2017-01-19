@@ -21,7 +21,7 @@ describe("Auth", function() {
                 // create the project table
                 database.createTable("project", {
                     id: {type: "integer", primaryKey: true},
-                    name: {type: "text", notNull: true},
+                    name: {type: "text", unique: true, notNull: true},
                     root_directory: {type: "text", notNull: true}
                 }, function(err) {
                     if (err) {

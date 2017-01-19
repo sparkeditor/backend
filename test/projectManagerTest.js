@@ -20,7 +20,7 @@ describe("ProjectManager", function() {
                 // create the project table
                 database.createTable("project", {
                     id: {type: "integer", primaryKey: true},
-                    name: {type: "text", notNull: true},
+                    name: {type: "text", unique: true, notNull: true},
                     root_directory: {type: "text", notNull: true}
                 }, function(err) {
                     if (err) {
@@ -52,6 +52,17 @@ describe("ProjectManager", function() {
         projectManager.createProject({name: "MyProject", root_directory: "/some/directory"}, function(error) {
             expect(error).to.not.exist;
             projectManager.getProject(1, function(err, project) {
+                expect(err).to.not.exist;
+                expect(project).to.deep.equal({id: 1, name: "MyProject", root_directory: "/some/directory"});
+                done();
+            });
+        });
+    });
+
+    it("retrieves a project by name", function(done) {
+        projectManager.createProject({name: "MyProject", root_directory: "/some/directory"}, function(err) {
+            expect(err).to.not.exist;
+            projectManager.getProject("MyProject", function(err, project) {
                 expect(err).to.not.exist;
                 expect(project).to.deep.equal({id: 1, name: "MyProject", root_directory: "/some/directory"});
                 done();
@@ -148,10 +159,24 @@ describe("ProjectManager", function() {
         });
     });
 
-    it("deletes a project", function(done) {
+    it("deletes a project by id", function(done) {
         projectManager.createProject({name: "MyProject", root_directory: "/some/directory"}, function(error) {
             expect(error).to.not.exist;
             projectManager.deleteProject(1, function(err) {
+                expect(err).to.not.exist;
+                db.all("SELECT * FROM project WHERE id = 1", function(err, rows) {
+                    expect(err).to.not.exist;
+                    expect(rows).to.have.length(0);
+                    done();
+                });
+            });
+        });
+    });
+
+    it("deletes a project by name", function(done) {
+        projectManager.createProject({name: "MyProject", root_directory: "/some/directory"}, function(error) {
+            expect(error).to.not.exist;
+            projectManager.deleteProject("MyProject", function(err) {
                 expect(err).to.not.exist;
                 db.all("SELECT * FROM project WHERE id = 1", function(err, rows) {
                     expect(err).to.not.exist;
