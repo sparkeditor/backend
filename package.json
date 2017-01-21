@@ -2,8 +2,11 @@
   "name": "spark-backend",
   "version": "0.1.0",
   "description": "The back end for the Spark collaborative text editor",
-  "main": "index.js",
+  "bin": {
+    "spark": "./bin/spark.js"
+  },
   "scripts": {
+    "start": "./bin/spark.js",
     "test": "mocha --recursive ./test"
   },
   "repository": {
@@ -11,6 +14,8 @@
     "url": "git+https://github.com/sparkeditor/backend.git"
   },
   "keywords": [
+    "realtime",
+    "collaborative",
     "text",
     "editor"
   ],
@@ -27,8 +32,12 @@
   },
   "dependencies": {
     "bcrypt": "^1.0.2",
+    "commander": "^2.9.0",
+    "express": "^4.14.0",
     "mkdirp": "^0.5.1",
+    "readline-sync": "^1.4.5",
     "rimraf": "^2.5.4",
+    "socket.io": "^1.7.2",
     "sqlite3": "^3.1.8",
     "winston": "^2.3.0"
   }
