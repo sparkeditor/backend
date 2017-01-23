@@ -159,6 +159,57 @@ describe("ProjectManager", function() {
         });
     });
 
+    it("retrieves projects for a user by username", function(done) {
+        projectManager.createProject({name: "MyProject", root_directory: "/some/directory"}, function (err) {
+            expect(err).to.not.exist;
+            projectManager.createProject({
+                name: "MyOtherProject",
+                root_directory: "/some/other/directory"
+            }, function (err) {
+                expect(err).to.not.exist;
+                // mock the auth module functionality
+                database.createTable("user",
+                    {
+                        "id": {type: "integer", primaryKey: true},
+                        "username": {type: "text", unique: true, notNull: true},
+                        "password": {type: "text", notNull: true}
+                    }, function (err) {
+                        expect(err).to.not.exist;
+                        database.createTable("user_project",
+                            {
+                                "user_id": {type: "integer", foreignKey: {"user": "id"}},
+                                "project_id": {type: "integer", foreignKey: {"project": "id"}},
+                                "access_level": {type: "text", notNull: true}
+                            }, function (err) {
+                                expect(err).to.not.exist;
+                                database.insertInto("user", [{
+                                    username: "testUser1",
+                                    password: "password"
+                                }, {username: "testUser2", password: "password"}], function (err) {
+                                    expect(err).to.not.exist;
+                                    database.insertInto("user_project", [{
+                                        user_id: 1,
+                                        project_id: 1,
+                                        access_level: "ADMIN"
+                                    }, {user_id: 1, project_id: 2, access_level: "CONTRIBUTOR"}], function (err) {
+                                        expect(err).to.not.exist;
+                                        projectManager.getProjectsForUser("testUser1", function (err, projects) {
+                                            expect(err).to.not.exist;
+                                            expect(projects).to.have.length(2);
+                                            expect(projects).to.deep.equal([
+                                                {id: 1, name: "MyProject", root_directory: "/some/directory", access_level: "ADMIN"},
+                                                {id: 2, name: "MyOtherProject", root_directory: "/some/other/directory", access_level: "CONTRIBUTOR"}
+                                            ]);
+                                            done();
+                                        });
+                                    });
+                                });
+                            });
+                    });
+            });
+        });
+    });
+
     it("deletes a project by id", function(done) {
         projectManager.createProject({name: "MyProject", root_directory: "/some/directory"}, function(error) {
             expect(error).to.not.exist;
