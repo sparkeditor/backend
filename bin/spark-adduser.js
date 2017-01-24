@@ -15,6 +15,7 @@ const username = readlineSync.question("Enter username: ");
 let inputCompleted = false;
 let password;
 while (!inputCompleted) {
+    // TODO {hideEchoBack: true} disables ctrl-C quitting - find a fix
     password = readlineSync.question("Enter password: ", {hideEchoBack: true});
     const confirmPassword = readlineSync.question("Confirm password: ", {hideEchoBack: true});
 
