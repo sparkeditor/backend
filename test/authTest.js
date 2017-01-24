@@ -21,8 +21,7 @@ describe("Auth", function() {
                 // create the project table
                 database.createTable("project", {
                     id: {type: "integer", primaryKey: true},
-                    name: {type: "text", unique: true, notNull: true},
-                    root_directory: {type: "text", notNull: true}
+                    name: {type: "text", unique: true, notNull: true}
                 }, function(err) {
                     if (err) {
                         throw err;
@@ -47,8 +46,8 @@ describe("Auth", function() {
                             }
                             // populate the project table
                             database.insertInto("project", [
-                                {name: "project1", root_directory: "/some/directory"},
-                                {name: "project2", root_directory: "/some/other/directory"}
+                                {name: "project1"},
+                                {name: "project2"}
                             ], function(err) {
                                 if (err) {
                                     throw err;
