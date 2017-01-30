@@ -13,7 +13,7 @@ initialize(function(err) {
     program
         .version(version)
         .command("start [port]", "starts the Spark server", {isDefault: true})
-        .command("adduser", "adds a new user")
+        .command("mkuser", "makes a new user")
         .command("rmuser", "removes a user")
         .command("mkproject", "makes a new Spark project")
         .command("rmproject", "removes a Spark project")
