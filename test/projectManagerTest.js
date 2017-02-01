@@ -12,16 +12,18 @@ const homeDir = os.homedir();
 describe("ProjectManager", function() {
     let db;
 
-    beforeEach(function(done) {
+    beforeEach(function (done) {
         mock({
-            "/some/directory": {},
+            "/some/directory": {
+                "a_file": "This is a file!"
+            },
             homeDir: {}
         });
-        db = new sqlite3.Database(path.join(".", "test.db"), function(err) {
+        db = new sqlite3.Database(path.join(".", "test.db"), function (err) {
             if (err) {
                 throw err;
             }
-            database.setDB(path.join(".", "test.db"), function(err) {
+            database.setDB(path.join(".", "test.db"), function (err) {
                 if (err) {
                     throw err;
                 }
@@ -29,7 +31,7 @@ describe("ProjectManager", function() {
                 database.createTable("project", {
                     id: {type: "integer", primaryKey: true},
                     name: {type: "text", unique: true, notNull: true}
-                }, function(err) {
+                }, function (err) {
                     if (err) {
                         throw err;
                     }
@@ -39,19 +41,19 @@ describe("ProjectManager", function() {
         });
     });
 
-    afterEach(function(done) {
+    afterEach(function (done) {
         mock.restore();
         fs.unlink(path.join(".", "test.db"), done);
     });
 
-    it("creates and persists a new project", function(done) {
-        projectManager.createProject({name: "MyProject"}, function(error) {
+    it("creates and persists a new project", function (done) {
+        projectManager.createProject({name: "MyProject"}, function (error) {
             expect(error).to.not.exist;
-            db.all("SELECT * FROM project WHERE id = 1", function(err, rows) {
+            db.all("SELECT * FROM project WHERE id = 1", function (err, rows) {
                 expect(err).to.not.exist;
                 expect(rows).to.have.length(1);
                 expect(rows[0]).to.deep.equal({id: 1, name: "MyProject"});
-                fs.lstat(path.join(homeDir, ".spark", "projects", "MyProject"), function(err, stats) {
+                fs.lstat(path.join(homeDir, ".spark", "projects", "MyProject"), function (err, stats) {
                     expect(err).to.not.exist;
                     expect(stats.isDirectory()).to.be.true;
                     done();
@@ -60,28 +62,26 @@ describe("ProjectManager", function() {
         });
     });
 
-    it("creates and persists a new project with a different root_directory", function(done) {
-        projectManager.createProject({name: "MyProject", root_directory: "/some/directory"}, function(error) {
-            console.log(error);
+    it("creates and persists a new project with a different root_directory", function (done) {
+        projectManager.createProject({name: "MyProject", root_directory: "/some/directory"}, function (error) {
             expect(error).to.not.exist;
-            db.all("SELECT * FROM project WHERE id = 1", function(err, rows) {
+            db.all("SELECT * FROM project WHERE id = 1", function (err, rows) {
                 expect(err).to.not.exist;
                 expect(rows).to.have.length(1);
                 expect(rows[0]).to.deep.equal({id: 1, name: "MyProject"});
-                fs.lstat(path.join(homeDir, ".spark", "projects", "MyProject"), function(err, stats) {
+                fs.lstat(path.join(homeDir, ".spark", "projects", "MyProject"), function (err, stats) {
                     expect(err).to.not.exist;
                     expect(stats.isSymbolicLink()).to.be.true;
                     done();
                 });
             });
         });
-
     });
 
-    it("retrieves a project", function(done) {
-        projectManager.createProject({name: "MyProject"}, function(error) {
+    it("retrieves a project", function (done) {
+        projectManager.createProject({name: "MyProject"}, function (error) {
             expect(error).to.not.exist;
-            projectManager.getProject(1, function(err, project) {
+            projectManager.getProject(1, function (err, project) {
                 expect(err).to.not.exist;
                 expect(project).to.deep.equal({id: 1, name: "MyProject"});
                 done();
@@ -89,10 +89,10 @@ describe("ProjectManager", function() {
         });
     });
 
-    it("retrieves a project by name", function(done) {
-        projectManager.createProject({name: "MyProject"}, function(err) {
+    it("retrieves a project by name", function (done) {
+        projectManager.createProject({name: "MyProject"}, function (err) {
             expect(err).to.not.exist;
-            projectManager.getProject("MyProject", function(err, project) {
+            projectManager.getProject("MyProject", function (err, project) {
                 expect(err).to.not.exist;
                 expect(project).to.deep.equal({id: 1, name: "MyProject"});
                 done();
@@ -100,8 +100,8 @@ describe("ProjectManager", function() {
         });
     });
 
-    it("retrieves users for a project", function(done) {
-        projectManager.createProject({name: "MyProject"}, function(err) {
+    it("retrieves users for a project", function (done) {
+        projectManager.createProject({name: "MyProject"}, function (err) {
             expect(err).to.not.exist;
             // mock the auth module functionality
             database.createTable("user",
@@ -109,25 +109,37 @@ describe("ProjectManager", function() {
                     "id": {type: "integer", primaryKey: true},
                     "username": {type: "text", unique: true, notNull: true},
                     "password": {type: "text", notNull: true}
-                }, function(err) {
+                }, function (err) {
                     expect(err).to.not.exist;
                     database.createTable("user_project",
                         {
                             "user_id": {type: "integer", foreignKey: {"user": "id"}},
                             "project_id": {type: "integer", foreignKey: {"project": "id"}},
                             "access_level": {type: "text", notNull: true}
-                        }, function(err) {
+                        }, function (err) {
                             expect(err).to.not.exist;
-                            database.insertInto("user", [{username: "testUser1", password: "password"}, {username: "testUser2", password: "password"}], function(err) {
+                            database.insertInto("user", [{
+                                username: "testUser1",
+                                password: "password"
+                            }, {username: "testUser2", password: "password"}], function (err) {
                                 expect(err).to.not.exist;
-                                database.insertInto("user_project", [{user_id: 1, project_id: 1, access_level: "ADMIN"}, {user_id: 2, project_id: 1, access_level: "CONTRIBUTOR"}], function(err) {
+                                database.insertInto("user_project", [{
+                                    user_id: 1,
+                                    project_id: 1,
+                                    access_level: "ADMIN"
+                                }, {user_id: 2, project_id: 1, access_level: "CONTRIBUTOR"}], function (err) {
                                     expect(err).to.not.exist;
-                                    projectManager.getUsersForProject(1, function(err, users) {
+                                    projectManager.getUsersForProject(1, function (err, users) {
                                         expect(err).to.not.exist;
                                         expect(users).to.have.length(2);
                                         expect(users).to.deep.equal([
                                             {id: 1, username: "testUser1", password: "password", access_level: "ADMIN"},
-                                            {id: 2, username: "testUser2", password: "password", access_level: "CONTRIBUTOR"}
+                                            {
+                                                id: 2,
+                                                username: "testUser2",
+                                                password: "password",
+                                                access_level: "CONTRIBUTOR"
+                                            }
                                         ]);
                                         done();
                                     });
@@ -138,7 +150,7 @@ describe("ProjectManager", function() {
         });
     });
 
-    it("retrieves projects for a user", function(done) {
+    it("retrieves projects for a user", function (done) {
         projectManager.createProject({name: "MyProject"}, function (err) {
             expect(err).to.not.exist;
             projectManager.createProject({
@@ -188,7 +200,7 @@ describe("ProjectManager", function() {
         });
     });
 
-    it("retrieves projects for a user by username", function(done) {
+    it("retrieves projects for a user by username", function (done) {
         projectManager.createProject({name: "MyProject"}, function (err) {
             expect(err).to.not.exist;
             projectManager.createProject({
@@ -238,12 +250,12 @@ describe("ProjectManager", function() {
         });
     });
 
-    it("deletes a project by id", function(done) {
-        projectManager.createProject({name: "MyProject"}, function(error) {
+    it("deletes a project by id", function (done) {
+        projectManager.createProject({name: "MyProject"}, function (error) {
             expect(error).to.not.exist;
-            projectManager.deleteProject(1, function(err) {
+            projectManager.deleteProject(1, function (err) {
                 expect(err).to.not.exist;
-                db.all("SELECT * FROM project WHERE id = 1", function(err, rows) {
+                db.all("SELECT * FROM project WHERE id = 1", function (err, rows) {
                     expect(err).to.not.exist;
                     expect(rows).to.have.length(0);
                     done();
@@ -252,16 +264,49 @@ describe("ProjectManager", function() {
         });
     });
 
-    it("deletes a project by name", function(done) {
-        projectManager.createProject({name: "MyProject"}, function(error) {
+    it("deletes a project by name", function (done) {
+        projectManager.createProject({name: "MyProject"}, function (error) {
             expect(error).to.not.exist;
-            projectManager.deleteProject("MyProject", function(err) {
+            projectManager.deleteProject("MyProject", function (err) {
                 expect(err).to.not.exist;
-                db.all("SELECT * FROM project WHERE id = 1", function(err, rows) {
+                db.all("SELECT * FROM project WHERE id = 1", function (err, rows) {
                     expect(err).to.not.exist;
                     expect(rows).to.have.length(0);
                     done();
                 });
+            });
+        });
+    });
+
+    it("gets project of a file", function (done) {
+        projectManager.createProject({name: "MyProject", root_directory: "/some/directory"}, function (error) {
+            expect(error).to.not.exist;
+            projectManager.getProjectForFile("/some/directory/a_file", function(err, project_id) {
+                expect(err).to.not.exist;
+                expect(project_id).to.equal(1);
+                done();
+            });
+        });
+    });
+
+    it("returns null for project of a file that does not exist", function(done) {
+        projectManager.createProject({name: "MyProject", root_directory: "/some/directory"}, function (error) {
+            expect(error).to.not.exist;
+            projectManager.getProjectForFile("/some/directory/a_file_that_does_not_exist", function(err, project_id) {
+                expect(err).to.not.exist;
+                expect(project_id).to.not.exist;
+                done();
+            });
+        });
+    });
+
+    it("returns null for project of a file in a directory that does not exist", function(done) {
+        projectManager.createProject({name: "MyProject", root_directory: "/some/directory"}, function (error) {
+            expect(error).to.not.exist;
+            projectManager.getProjectForFile("/some/other/directory/a_file", function(err, project_id) {
+                expect(err).to.not.exist;
+                expect(project_id).to.not.exist;
+                done();
             });
         });
     });
