@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const program = require("commander");
-const server = require("../lib/socketRouter");
+const server = require("../lib/server");
 const logger = require("../lib/logger");
 const version = require("../package.json").version;
 
