@@ -33,6 +33,7 @@
   "dependencies": {
     "async-for-each": "^1.0.0",
     "bcrypt": "^1.0.2",
+    "bluebird": "^3.4.7",
     "commander": "^2.9.0",
     "express": "^4.14.0",
     "mkdirp": "^0.5.1",
