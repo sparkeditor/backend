@@ -13,13 +13,12 @@ const projectName = readlineSync.question("Enter the name of the project to dele
 const confirmDelete = readlineSync.keyInYN("Delete project " + projectName + ": Are you sure? ");
 
 if (confirmDelete) {
-    projectManager.deleteProject(projectName, function(err) {
-        if (err) {
+    projectManager.deleteProject(projectName)
+        .then(() => console.log("Project " + projectName + " deleted."))
+        .catch((err) => {
             console.error(err);
             process.exit(1);
-        }
-        console.log("Project " + projectName + " deleted.")
-    });
+        });
 }
 else {
     console.log("Aborted.");

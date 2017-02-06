@@ -13,13 +13,14 @@ const username = readlineSync.question("Enter the username of the user to delete
 const confirmDelete = readlineSync.keyInYN("Delete user " + username + ": Are you sure? ");
 
 if (confirmDelete) {
-    auth.removeUser(username, function(err) {
-        if (err && err.code != "DOES_NOT_EXIST") {
-            console.error(err);
-            process.exit(1);
-        }
-        console.log("User " + username + " deleted.");
-    });
+    auth.removeUser(username)
+        .then(() => console.log("User " + username + " deleted."))
+        .catch((err) => {
+            if (err && err.code != "DOES_NOT_EXIST") {
+                console.error(err);
+                process.exit(1);
+            }
+        });
 }
 else {
     console.log("Aborted.");

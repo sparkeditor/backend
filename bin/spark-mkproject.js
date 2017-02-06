@@ -10,6 +10,7 @@ program
     .parse(process.argv);
 
 const projectName = readlineSync.question("Enter project name: ");
+// TODO make rootDirectory tab-complete directories
 const rootDirectory = readlineSync.question("Enter existing project directory, or leave blank to generate a new directory: ");
 
 const projectDefinition = {
@@ -17,8 +18,9 @@ const projectDefinition = {
     root_directory: rootDirectory
 };
 
-projectMananager.createProject(projectDefinition, function(err) {
-    if (err) {
+projectMananager.createProject(projectDefinition)
+    .then(() => console.log("Project " + projectName + " created."))
+    .catch((err) => {
         if (err.code === "ENOENT") {
             console.error(rootDirectory + " does not exist!");
             process.exit(0);
@@ -31,6 +33,4 @@ projectMananager.createProject(projectDefinition, function(err) {
             console.error(err);
             process.exit(1);
         }
-    }
-    console.log("Project " + projectName + " created.");
-});
+    });

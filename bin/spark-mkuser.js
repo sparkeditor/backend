@@ -27,10 +27,9 @@ while (!inputCompleted) {
     }
 }
 
-auth.addUser({username: username, password: password}, function(err) {
-    if (err) {
+auth.addUser({username: username, password: password})
+    .then(() => console.log("User " + username + " created."))
+    .catch((err) => {
         console.error(err);
         process.exit(1);
-    }
-    console.log("User " + username + " created.");
-});
+    });
