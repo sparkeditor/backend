@@ -75,7 +75,7 @@ describe("ProjectManager", function() {
                 expect(project).to.deep.equal({id: 1, name: "MyProject", root_directory: "/home/jeremy/.spark/projects/MyProject"});
             })
             .catch((err) => {
-                expect(error).to.not.exist;
+                expect(err).to.not.exist;
             });
     });
 
