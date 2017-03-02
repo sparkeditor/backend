@@ -58,9 +58,6 @@ describe("Auth", function() {
                 expect(rows).to.have.length(1);
                 expect(rows[0].username).to.equal("user1");
                 expect(rows[0].password).to.not.equal("password");
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -75,9 +72,6 @@ describe("Auth", function() {
                     .then((user2) => {
                         expect(user1.password).to.not.equal(user2.password);
                     });
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -90,9 +84,6 @@ describe("Auth", function() {
             .then(() => auth.authenticate("user1", "notThePassword"))
             .then((hasAccess) => {
                 expect(hasAccess).to.be.false;
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -105,9 +96,6 @@ describe("Auth", function() {
             .then(() => auth.authenticate("user1", "password", 2))
             .then((hasAccess) => {
                 expect(hasAccess).to.be.true;
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -116,9 +104,6 @@ describe("Auth", function() {
             .then(() => auth.getAccess("user1", 1))
             .then((accessLevel) => {
                 expect(accessLevel).to.equal(auth.accessLevels.ADMIN);
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -128,9 +113,6 @@ describe("Auth", function() {
             .then(() => auth.getAccess("user1", 1))
             .then((accessLevel) => {
                 expect(accessLevel).to.equal(auth.accessLevels.ADMIN);
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -140,9 +122,6 @@ describe("Auth", function() {
             .then(() => auth.getAccess("user1", 1))
             .then((accessLevel) => {
                 expect(accessLevel).to.equal(auth.accessLevels.ADMIN);
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -169,9 +148,6 @@ describe("Auth", function() {
             .then(() => database.query("user_project", {user_id: 1}))
             .then((rows) => {
                 expect(rows).to.have.length(0);
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 });

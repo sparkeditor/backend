@@ -49,9 +49,6 @@ describe("ProjectManager", function() {
             .then(() => fs.lstatAsync(path.join(homeDir, ".spark", "projects", "MyProject")))
             .then((stats) => {
                 expect(stats.isDirectory()).to.be.true;
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -65,9 +62,6 @@ describe("ProjectManager", function() {
             .then(() => fs.lstatAsync(path.join(homeDir, ".spark", "projects", "MyProject")))
             .then((stats) => {
                 expect(stats.isSymbolicLink()).to.be.true;
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -76,9 +70,6 @@ describe("ProjectManager", function() {
             .then(() => projectManager.getProject(1))
             .then((project) => {
                 expect(project).to.deep.equal({id: 1, name: "MyProject", root_directory: path.join(homeDir, ".spark", "projects", "MyProject")});
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -87,9 +78,6 @@ describe("ProjectManager", function() {
             .then(() => projectManager.getProject("MyProject"))
             .then((project) => {
                 expect(project).to.deep.equal({id: 1, name: "MyProject", root_directory: path.join(homeDir, ".spark", "projects", "MyProject")});
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -116,10 +104,7 @@ describe("ProjectManager", function() {
                     {id: 1, username: "testUser1", password: "password", access_level: "ADMIN"},
                     {id: 2, username: "testUser2", password: "password", access_level: "CONTRIBUTOR"}
                 ]);
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
-            })
+            });
     });
 
     it("retrieves projects for a user", function () {
@@ -146,9 +131,6 @@ describe("ProjectManager", function() {
                     {id: 1, name: "MyProject", access_level: "ADMIN"},
                     {id: 2, name: "MyOtherProject", access_level: "CONTRIBUTOR"}
                 ]);
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -176,9 +158,6 @@ describe("ProjectManager", function() {
                     {id: 1, name: "MyProject", access_level: "ADMIN"},
                     {id: 2, name: "MyOtherProject", access_level: "CONTRIBUTOR"}
                 ]);
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -188,9 +167,6 @@ describe("ProjectManager", function() {
             .then(() => db.allAsync("SELECT * FROM project WHERE id = 1"))
             .then((rows) => {
                 expect(rows).to.have.length(0);
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -200,9 +176,6 @@ describe("ProjectManager", function() {
             .then(() => db.allAsync("SELECT * FROM project WHERE id = 1"))
             .then((rows) => {
                 expect(rows).to.have.length(0);
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -211,9 +184,6 @@ describe("ProjectManager", function() {
             .then(() => projectManager.getProjectForFile("/some/directory/a_file"))
             .then((projectId) => {
                 expect(projectId).to.equal(1);
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -228,9 +198,6 @@ describe("ProjectManager", function() {
             .then(() => projectManager.getProjectForFile(path.join(homeDir, ".spark", "projects", "MyProject", "a_file")))
             .then((projectId) => {
                 expect(projectId).to.equal(1);
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -239,10 +206,7 @@ describe("ProjectManager", function() {
             .then(() => projectManager.getProjectForFile("/some/directory/a_file_that_does_not_exist"))
             .then((projectId) => {
                 expect(projectId).to.not.exist;
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
-            })
+            });
     });
 
     it("returns null for project of a file in a directory that does not exist", function() {
@@ -250,9 +214,6 @@ describe("ProjectManager", function() {
             .then(() => projectManager.getProjectForFile("/some/other/directory/a_file"))
             .then((projectId) => {
                 expect(projectId).to.not.exist;
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
 
     });

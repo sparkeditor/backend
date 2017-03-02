@@ -36,9 +36,6 @@ describe("Database", function() {
             .then((result) => {
                 expect(result["count(*)"]).to.equal(1);
                 expect(result.sql.toLowerCase()).to.equal("create table test1 (foo integer primary key, bar text)");
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -61,9 +58,6 @@ describe("Database", function() {
             .then((result) => {
                 expect(result["count(*)"]).to.equal(1);
                 expect(result.sql.toLowerCase()).to.equal("create table test1 (foo integer primary key, bar text)");
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -75,9 +69,6 @@ describe("Database", function() {
                 expect(rows.length).to.equal(1);
                 expect(rows[0].foo).to.equal(3);
                 expect(rows[0].bar).to.equal("test");
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -91,9 +82,6 @@ describe("Database", function() {
                 expect(rows[1].foo).to.equal(5);
                 expect(rows[0].bar).to.equal("test");
                 expect(rows[1].bar).to.equal("test2");
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -105,9 +93,6 @@ describe("Database", function() {
                 expect(result).to.be.an("array");
                 expect(result).to.have.length(1);
                 expect(result[0]).to.deep.equal({foo: 3, bar: "test"});
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -121,9 +106,6 @@ describe("Database", function() {
                 expect(result).to.be.an("array");
                 expect(result).to.have.length(1);
                 expect(result[0]).to.deep.equal({foo: 3, bar: "test", id: 1, test1_fk: 3});
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -134,9 +116,6 @@ describe("Database", function() {
             .then(() => db.allAsync("SELECT * FROM test1 WHERE foo = 3"))
             .then((rows) => {
                 expect(rows).to.have.length(0);
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 });

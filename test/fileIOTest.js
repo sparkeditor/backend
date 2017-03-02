@@ -24,9 +24,6 @@ describe("FileIO", function() {
         return fileIO.read(path.join(testDir, "dir1", "file1"))
             .then((data) => {
                 expect(data).to.equal("This is a test file.");
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -45,9 +42,6 @@ describe("FileIO", function() {
             .then(() => fs.readFileSync(path.join(testDir, "dir1", "file1"), "utf8"))
             .then((text) => {
                 expect(text).to.equal("Different text.");
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
@@ -56,33 +50,21 @@ describe("FileIO", function() {
             .then(() => fs.readFileSync(path.join(testDir, "dir1", "file2"), "utf8"))
             .then((text) => {
                 expect(text).to.equal("Some more text.");
-            })
-            .catch((err) => {
-                expect(err).to.not.exist;
             });
     });
 
     it("creates a new directory asynchronously", function () {
         return fileIO.createDir(path.join(testDir, "dir2"))
-            .then(() => fs.accessSync(path.join(testDir, "dir2")))
-            .catch((err) => {
-                expect(err).to.not.exist;
-            });
+            .then(() => fs.accessSync(path.join(testDir, "dir2")));
     });
 
     it("creates a new directory implicitly from a path passed to write()", function () {
         return fileIO.write(path.join(testDir, "dir2", "file1"), "File text.")
-            .then(() => fs.accessSync(testDir, "dir2"))
-            .catch((err) => {
-                expect(err).to.not.exist;
-            });
+            .then(() => fs.accessSync(testDir, "dir2"));
     });
 
     it("fails silently trying to create an existing directory asynchronously", function () {
-        return fileIO.createDir(path.join(testDir, "dir1"))
-            .catch((err) => {
-                expect(err).to.not.exist;
-            });
+        return fileIO.createDir(path.join(testDir, "dir1"));
     });
 
     it("deletes a file asynchronously", function () {
