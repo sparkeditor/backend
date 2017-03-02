@@ -1,4 +1,4 @@
-# Spark Collaborative Text Editor Backend
+# Spark Editor Backend [![Build Status](https://travis-ci.org/sparkeditor/backend.svg?branch=master)](https://travis-ci.org/sparkeditor/backend)
 This is the backend for the [Spark editor](https://sparkeditor.github.io). Spark is an open source, self hosted solution for collaborative programming. It allows multiple programmers to work on the same file or project, giving Google Docs-style realtime updates as edits are made. The backend is responsible for synchronizing every client's open buffers reading/writing to the filesystem.
 
 The editor itself is [a work in progress](https://github.com/sparkeditor/webapp).
@@ -19,8 +19,23 @@ The backend keeps track of projects and users. A project is defined by project f
 ## Command Line Reference
 Until the dashboard interface is built, you'll have to use the `spark` subcommands to create and delete projects and users. These commands include:
 
-    $ spark mkproject     # Make a new project
-    $ spark mkuser        # Make a new user
-    $ spark rmproject     # Delete a project
-    $ spark rmuser        # Delete a user
-    $ spark               # Start the server
+    Usage: spark [options] [command]
+      
+      
+    Commands:
+        
+    start [port]  starts the Spark server
+    mkuser        makes a new user
+    rmuser        removes a user
+    mkproject     makes a new Spark project
+    rmproject     removes a Spark project
+    setaccess     sets a user's access level to a project
+    lsusers       lists users
+    lsprojects    lists projects
+    help [cmd]    display help for [cmd]
+    
+    Options:
+    
+    -h, --help     output usage information
+    -V, --version  output the version number
+                                                      
