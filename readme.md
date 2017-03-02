@@ -17,7 +17,7 @@ The backend keeps track of projects and users. A project is defined by project f
     $ spark
     
 ## Command Line Reference
-Until the dashboard interface is built, you'll have to use the `spark` subcommands to create and delete projects and users. These commands include:
+Until the dashboard interface is built, you'll have to use the `spark` subcommands to create and delete projects and users.
 
     Usage: spark [options] [command]
       
