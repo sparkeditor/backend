@@ -3,7 +3,10 @@ language: node_js
 node_js:
   - "node"
 addons:
-  packages:
-    - gcc-4.8
-    - g++-4.8
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+
 os: linux
