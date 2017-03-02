@@ -16,8 +16,10 @@ database.getDB().all(query, function(err, results) {
         process.exit(1);
     }
     else {
+        let ls = "";
         results.forEach((project) => {
-            console.log(project.name);
+            ls += project.name + "\n";
         });
+        process.stdout.write(ls);
     }
 });

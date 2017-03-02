@@ -16,8 +16,10 @@ database.getDB().all(query, function(err, results) {
         process.exit(1);
     }
     else {
+        let ls = "";
         results.forEach((user) => {
-            console.log(user.username);
+            ls += user.username + "\n";
         });
+        process.stdout.write(ls);
     }
 });
