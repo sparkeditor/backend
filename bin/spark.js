@@ -14,6 +14,9 @@ initialize()
             .command("rmuser", "removes a user")
             .command("mkproject", "makes a new Spark project")
             .command("rmproject", "removes a Spark project")
+            .command("setaccess", "sets a user's access level to a project")
+            .command("lsusers", "lists users")
+            .command("lsprojects", "lists projects")
             .parse(process.argv);
     })
     .catch((err) => {
