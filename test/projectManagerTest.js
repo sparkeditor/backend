@@ -65,6 +65,9 @@ describe("ProjectManager", function() {
             .then(() => fs.lstatAsync(path.join(homeDir, ".spark", "projects", "MyProject")))
             .then((stats) => {
                 expect(stats.isSymbolicLink()).to.be.true;
+            })
+            .catch((err) => {
+                expect(err).to.not.exist;
             });
     });
 
@@ -72,10 +75,9 @@ describe("ProjectManager", function() {
         return projectManager.createProject({name: "MyProject"})
             .then(() => projectManager.getProject(1))
             .then((project) => {
-                expect(project).to.deep.equal({id: 1, name: "MyProject", root_directory: "/home/jeremy/.spark/projects/MyProject"});
+                expect(project).to.deep.equal({id: 1, name: "MyProject", root_directory: path.join(homeDir, ".spark", "projects", "MyProject")});
             })
             .catch((err) => {
-                console.log(err);
                 expect(err).to.not.exist;
             });
     });
@@ -84,10 +86,9 @@ describe("ProjectManager", function() {
         return projectManager.createProject({name: "MyProject"})
             .then(() => projectManager.getProject("MyProject"))
             .then((project) => {
-                expect(project).to.deep.equal({id: 1, name: "MyProject", root_directory: "/home/jeremy/.spark/projects/MyProject"});
+                expect(project).to.deep.equal({id: 1, name: "MyProject", root_directory: path.join(homeDir, ".spark", "projects", "MyProject")});
             })
             .catch((err) => {
-                console.log(err);
                 expect(err).to.not.exist;
             });
     });
