@@ -1,17 +1,20 @@
 #!/usr/bin/env node
 
 const program = require("commander");
-const readlineSync = require("readline-sync");
 const projectMananager = require("../lib/projectManager");
 const version = require("../package.json").version;
 
+let projectName, rootDirectory;
+
 program
     .version(version)
-    .parse(process.argv);
+    .arguments("<name> [directory]")
+    .action(function(name, dir) {
+        projectName = name;
+        rootDirectory = dir;
+    });
 
-const projectName = readlineSync.question("Enter project name: ");
-// TODO make rootDirectory tab-complete directories
-const rootDirectory = readlineSync.question("Enter existing project directory, or leave blank to generate a new directory: ");
+program.parse(process.argv);
 
 const projectDefinition = {
     name: projectName,

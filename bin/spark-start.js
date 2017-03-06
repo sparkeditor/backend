@@ -11,6 +11,10 @@ program
     .version(version)
     .arguments("[port]")
     .action(function(portArg) {
+        if (Number.isNaN(parseInt(portArg))) {
+            console.error("Port must be a number.");
+            process.exit(1);
+        }
         port = portArg || port;
     });
 

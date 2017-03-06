@@ -1,28 +1,28 @@
 #!/usr/bin/env node
 
 const program = require("commander");
-const readlineSync = require("readline-sync");
 const auth = require("../lib/auth");
 const version = require("../package.json").version;
 
+let username;
+
 program
     .version(version)
+    .arguments("<username>")
+    .action(function(name) {
+        username = name;
+    })
     .parse(process.argv);
 
-const username = readlineSync.question("Enter the username of the user to delete: ");
-const confirmDelete = readlineSync.keyInYN("Delete user " + username + ": Are you sure? ");
-
-if (confirmDelete) {
-    auth.removeUser(username)
-        .then(() => console.log("User " + username + " deleted."))
-        .catch((err) => {
-            if (err && err.code != "DOES_NOT_EXIST") {
-                console.error(err);
-                process.exit(1);
-            }
-        });
-}
-else {
-    console.log("Aborted.");
-    process.exit(0);
-}
+auth.removeUser(username)
+    .then(() => console.log("User " + username + " deleted."))
+    .catch((err) => {
+        if (err.code === "DOES_NOT_EXIST") {
+            console.log("User " + username + " does not exist. No action taken.");
+            process.exit(0);
+        }
+        else {
+            console.error(err);
+            process.exit(1);
+        }
+    });

@@ -1,35 +1,28 @@
 #!/usr/bin/env node
 
 const program = require("commander");
-const readlineSync = require("readline-sync");
 const auth = require("../lib/auth");
-const projectManager = require("../lib/projectManager");
 const version = require("../package.json").version;
+
+let username, password;
 
 program
     .version(version)
+    .arguments("<username> <password>")
+    .action(function(usernameArg, passwordArg) {
+        username = usernameArg;
+        password = passwordArg;
+    })
     .parse(process.argv);
-
-const username = readlineSync.question("Enter username: ");
-
-let inputCompleted = false;
-let password;
-while (!inputCompleted) {
-    // TODO {hideEchoBack: true} disables ctrl-C quitting - find a fix
-    password = readlineSync.question("Enter password: ", {hideEchoBack: true});
-    const confirmPassword = readlineSync.question("Confirm password: ", {hideEchoBack: true});
-
-    if (password === confirmPassword) {
-        inputCompleted = true;
-    }
-    else {
-        console.log("Passwords must match.");
-    }
-}
 
 auth.addUser({username: username, password: password})
     .then(() => console.log("User " + username + " created."))
     .catch((err) => {
-        console.error(err);
+        if (err.message === "SQLITE_CONSTRAINT: UNIQUE constraint failed: user.username") {
+            console.log("User " + username + " already exists.")
+        }
+        else {
+            console.error(err);
+        }
         process.exit(1);
     });

@@ -1,23 +1,28 @@
 #!/usr/bin/env node
 
 const program = require("commander");
-const readlineSync = require("readline-sync");
 const auth = require("../lib/auth");
 const projectManager = require("../lib/projectManager");
 const version = require("../package.json").version;
 
+let username, projectName, accessLevel;
+
 program
     .version(version)
+    .arguments("<username> <project> <access level>")
+    .action(function(usernameArg, projectArg, accessLevelArg) {
+        username = usernameArg;
+        projectName = projectArg;
+        accessLevel = accessLevelArg;
+    })
     .parse(process.argv);
 
-const username = readlineSync.question("Enter username: ");
-const projectName = readlineSync.question("Enter project name: ");
-const accessLevelQuery = readlineSync.question("Enter access level: ", {
-    limit: /^(ADMIN|CONTRIBUTOR|READ\sONLY)$/i,
-    limitMessage: "Invalid access level"
-});
+if (!accessLevel.match(/^(ADMIN|CONTRIBUTOR|READ\sONLY)$/i)) {
+    console.log("Invalid access level. Valid options are admin, contributor, read only");
+    process.exit(1);
+}
 
-const accessLevel = accessLevelQuery.replace(" ", "_").toUpperCase();
+accessLevel = accessLevel.replace(" ", "_").toUpperCase();
 
 projectManager.getProject(projectName)
     .then((project) => {

@@ -1,26 +1,22 @@
 #!/usr/bin/env node
 
 const program = require("commander");
-const readlineSync = require('readline-sync');
 const projectManager = require("../lib/projectManager");
 const version = require("../package.json").version;
 
+let projectName;
+
 program
     .version(version)
+    .arguments("<name>")
+    .action(function(name) {
+        projectName = name;
+    })
     .parse(process.argv);
 
-const projectName = readlineSync.question("Enter the name of the project to delete: ");
-const confirmDelete = readlineSync.keyInYN("Delete project " + projectName + ": Are you sure? ");
-
-if (confirmDelete) {
-    projectManager.deleteProject(projectName)
-        .then(() => console.log("Project " + projectName + " deleted."))
-        .catch((err) => {
-            console.error(err);
-            process.exit(1);
-        });
-}
-else {
-    console.log("Aborted.");
-    process.exit(0);
-}
+projectManager.deleteProject(projectName)
+    .then(() => console.log("Project " + projectName + " deleted."))
+    .catch((err) => {
+        console.error(err);
+        process.exit(1);
+    });
