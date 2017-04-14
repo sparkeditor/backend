@@ -7,7 +7,15 @@
   },
   "scripts": {
     "start": "./bin/spark.js",
-    "test": "mocha --recursive ./test"
+    "test": "mocha --recursive ./test",
+    "prettier": "prettier --write",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "npm run prettier",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
@@ -27,8 +35,11 @@
   "homepage": "https://github.com/sparkeditor/backend#readme",
   "devDependencies": {
     "chai": "^3.5.0",
+    "husky": "^0.13.3",
+    "lint-staged": "^3.4.0",
     "mocha": "^3.2.0",
-    "mock-fs": "^3.12.1"
+    "mock-fs": "^3.12.1",
+    "prettier": "^1.0.2"
   },
   "dependencies": {
     "async-for-each": "^1.0.0",
