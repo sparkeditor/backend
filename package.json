@@ -8,7 +8,7 @@
   "scripts": {
     "start": "./bin/spark.js",
     "test": "mocha --recursive ./test",
-    "prettier": "prettier --write",
+    "prettier": "prettier --tab-width 4 --write",
     "precommit": "lint-staged"
   },
   "lint-staged": {
